@@ -1,9 +1,22 @@
 package exercise.android.reemh.todo_items;
 
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 // TODO: implement!
-public class TodoItemsHolderImpl implements TodoItemsHolder {
+public class TodoItemsHolderImpl extends RecyclerView.ViewHolder implements TodoItemsHolder{
+  public TodoItemsHolderImpl(@NonNull View itemView) {
+    super(itemView);
+    TextView editTextTask = itemView.findViewById(R.id.todo_text);
+  }
+
   @Override
   public List<TodoItem> getCurrentItems() {
     return toDoesList;
@@ -11,8 +24,7 @@ public class TodoItemsHolderImpl implements TodoItemsHolder {
 
   @Override
   public void addNewInProgressItem(String description) {
-    TodoItem new_item = new TodoItem();
-    new_item.task_name = description;
+    TodoItem new_item = new TodoItem(description);
     toDoesList.add(0, new_item); // add the item in the beginning of the list
   }
 

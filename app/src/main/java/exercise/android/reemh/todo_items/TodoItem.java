@@ -12,4 +12,9 @@ public class TodoItem implements Serializable {
 
     status curr_status = status.IN_PROGRESS;
     String task_name;
+
+    TodoItem(String description){
+        this.task_name = description;
+    }
+
 }

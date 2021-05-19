@@ -6,9 +6,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,14 +24,42 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
+    EditText recyclerTodoItemsList= findViewById(R.id.recyclerTodoItemsList);
     if (holder == null) {
-      holder = new TodoItemsHolderImpl();
+      holder = new TodoItemsHolderImpl(recyclerTodoItemsList);
     }
-
     // TODO: implement the specs as defined below
     //    (find all UI components, hook them up, connect everything you need)
+
+    Button buttonCreateTodoItem = findViewById(R.id.buttonCreateTodoItem);
+    EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
+
+
+    editTextInsertTask.setText(""); // cleanup text in edit-text
+    editTextInsertTask.setEnabled(true); // set edit-text as enabled (user can input text)
+    buttonCreateTodoItem.setEnabled(false); // set button as disabled (user can't click)
+
+    editTextInsertTask.addTextChangedListener(new TextWatcher() {
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+      public void onTextChanged(CharSequence s, int start, int before, int count) { }
+      public void afterTextChanged(Editable s) {
+        // text did change
+        String newText = editTextInsertTask.getText().toString();
+        buttonCreateTodoItem.setEnabled(true);
+      }
+    });
+
+    buttonCreateTodoItem.setOnClickListener(v -> {
+      String userInputString = editTextInsertTask.getText().toString();
+      if(userInputString.equals(""))
+        return;
+      holder.addNewInProgressItem(userInputString);
+      editTextInsertTask.setText(""); // cleanup text in edit-text
+      });
   }
+
 }
+
 
 /*
 
