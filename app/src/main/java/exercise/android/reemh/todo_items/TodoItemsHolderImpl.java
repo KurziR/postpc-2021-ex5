@@ -11,11 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 // TODO: implement!
-public class TodoItemsHolderImpl extends RecyclerView.ViewHolder implements TodoItemsHolder{
-  public TodoItemsHolderImpl(@NonNull View itemView) {
-    super(itemView);
-    TextView editTextTask = itemView.findViewById(R.id.todo_text);
-  }
+public class TodoItemsHolderImpl implements TodoItemsHolder{
 
   @Override
   public List<TodoItem> getCurrentItems() {

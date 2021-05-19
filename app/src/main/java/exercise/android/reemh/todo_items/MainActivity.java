@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 public class MainActivity extends AppCompatActivity {
 
   public TodoItemsHolder holder = null;
+  public ToDoAdapter adapter = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText recyclerTodoItemsList= findViewById(R.id.recyclerTodoItemsList);
     if (holder == null) {
-      holder = new TodoItemsHolderImpl(recyclerTodoItemsList);
+      holder = new TodoItemsHolderImpl();
     }
     // TODO: implement the specs as defined below
     //    (find all UI components, hook them up, connect everything you need)
