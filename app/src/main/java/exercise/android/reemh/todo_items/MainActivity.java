@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class MainActivity extends AppCompatActivity {
 
   public TodoItemsHolder holder = null;
@@ -26,13 +28,15 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
 
     EditText recyclerTodoItemsList= findViewById(R.id.recyclerTodoItemsList);
+    ToDoAdapter adapter = new ToDoAdapter();
+    recyclerTodoItemsList.adapter
     if (holder == null) {
       holder = new TodoItemsHolderImpl();
     }
     // TODO: implement the specs as defined below
     //    (find all UI components, hook them up, connect everything you need)
 
-    Button buttonCreateTodoItem = findViewById(R.id.buttonCreateTodoItem);
+    FloatingActionButton buttonCreateTodoItem = findViewById(R.id.buttonCreateTodoItem);
     EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
 
 

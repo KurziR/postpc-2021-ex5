@@ -13,6 +13,8 @@ import java.util.List;
 // TODO: implement!
 public class TodoItemsHolderImpl implements TodoItemsHolder{
 
+  List<TodoItem> toDoesList = null;
+
   @Override
   public List<TodoItem> getCurrentItems() {
     return toDoesList;

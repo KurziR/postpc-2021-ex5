@@ -15,6 +15,8 @@ import static androidx.recyclerview.widget.RecyclerView.*;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
 
+    private List<TodoItem> toDoes = new List<>();
+
     @NonNull
     @Override
     public ToDoHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -28,6 +30,6 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return toDoes.size();
     }
 }
