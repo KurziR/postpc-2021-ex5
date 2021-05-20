@@ -1,6 +1,7 @@
 package exercise.android.reemh.todo_items;
 
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,11 +28,13 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
     @NonNull
     @Override
     public ToDoHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_one_todo, parent, false);
+        return new ToDoHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ToDoHolder holder, int position) {
+        TodoItem todoItem = toDoesImpl.getToDo(position);
         holder.checkBox.setOnClickListener(v -> {
 
         });

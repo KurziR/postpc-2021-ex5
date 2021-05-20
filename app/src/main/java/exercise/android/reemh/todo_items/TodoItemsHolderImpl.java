@@ -21,6 +21,11 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
   }
 
   @Override
+  public TodoItem getToDo(int position) {
+    return toDoesList.get(position);
+  }
+
+  @Override
   public List<TodoItem> getCurrentItems() {
     return toDoesList;
   }
