@@ -8,12 +8,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // TODO: implement!
 public class TodoItemsHolderImpl implements TodoItemsHolder{
 
   List<TodoItem> toDoesList = null;
+
+  public TodoItemsHolderImpl() {
+    toDoesList = new ArrayList<TodoItem>();
+  }
 
   @Override
   public List<TodoItem> getCurrentItems() {

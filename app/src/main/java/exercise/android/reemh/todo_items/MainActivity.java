@@ -20,16 +20,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
 
   public TodoItemsHolder holder = null;
-  public ToDoAdapter adapter = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    EditText recyclerTodoItemsList= findViewById(R.id.recyclerTodoItemsList);
-    ToDoAdapter adapter = new ToDoAdapter();
-    recyclerTodoItemsList.adapter
+    holder = new TodoItemsHolderImpl();
+
+    RecyclerView recyclerTodoItemsList= findViewById(R.id.recyclerTodoItemsList);
+    ToDoAdapter adapter = new ToDoAdapter(holder);
+    recyclerTodoItemsList.setAdapter(adapter);
+    recyclerTodoItemsList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+    );
     if (holder == null) {
       holder = new TodoItemsHolderImpl();
     }
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton buttonCreateTodoItem = findViewById(R.id.buttonCreateTodoItem);
     EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
+
 
 
     editTextInsertTask.setText(""); // cleanup text in edit-text
