@@ -34,13 +34,31 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ToDoHolder holder, int position) {
-        TodoItem todoItem = toDoesImpl.getToDo(position);
-        holder.checkBox.setOnClickListener(v -> {
 
+        // recycle the given holder with todoitem at position
+        TodoItem todoItem = toDoesImpl.getToDo(position);
+        String toDoTask = todoItem.task_name;
+        holder.editTextTask.setText(toDoTask); // set edit-text as disabled (user cant input text)
+        holder.checkBox.isChecked();
+
+        holder.checkBox.setOnClickListener(v -> {
+            if(holder.checkBox.isChecked()) {
+                toDoesImpl.markItemInProgress(todoItem);
+            }
+            else {
+                toDoesImpl.markItemDone(todoItem);
+            }
+            notifyDataSetChanged();
         });
 
         holder.editTextTask.setOnClickListener(v -> {
+            // todo ?????
+            holder.editTextTask.setEnabled(true);
+        });
 
+        holder.removeToDo.setOnClickListener(v -> {
+            toDoesImpl.deleteItem(todoItem);
+            notifyDataSetChanged();
         });
     }
 
