@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
       holder.addNewInProgressItem(userInputString);
       editTextInsertTask.setText(""); // cleanup text in edit-text
       });
+
+    System.out.println(holder.getCurrentItems());
   }
 
 }
