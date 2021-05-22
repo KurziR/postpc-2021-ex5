@@ -48,7 +48,7 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
     for(int i=0; i<toDoesInProgressList.size(); i++) {
       TodoItem curr = toDoesInProgressList.get(i);
       if(item.equals(curr)) {
-        curr.curr_status = TodoItem.status.DONE;
+        curr.setStatus(TodoItem.status.DONE);
         toDoesDoneList.add(0, curr);
         toDoesInProgressList.remove(curr);
         combineLists();
@@ -62,7 +62,7 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
     for(int i=0; i<toDoesDoneList.size(); i++) {
       TodoItem curr = toDoesDoneList.get(i);
       if(item.equals(curr)) {
-        curr.curr_status = TodoItem.status.IN_PROGRESS;
+        curr.setStatus(TodoItem.status.IN_PROGRESS);
         toDoesInProgressList.add(0, curr);
         toDoesDoneList.remove(curr);
         combineLists();

@@ -22,4 +22,8 @@ public class TodoItem implements Serializable {
         return item.curr_status;
     }
 
+    public void setStatus(status status) {
+        this.curr_status = status;
+    }
+
 }

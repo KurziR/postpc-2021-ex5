@@ -60,11 +60,13 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
                 // the task in "DONE" status
                 if(!isChecked) {
                     toDoesImpl.markItemInProgress(todoItem);
+                    todoItem.setStatus(TodoItem.status.IN_PROGRESS);
                     holder.checkBox.setChecked(false);
                 }
                 // the task in "IN-PROGRESS" status
                 else {
                     toDoesImpl.markItemDone(todoItem);
+                    todoItem.setStatus(TodoItem.status.DONE);
                     holder.checkBox.setChecked(true);
                 }
                 notifyDataSetChanged();
