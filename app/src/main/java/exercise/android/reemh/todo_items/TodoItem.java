@@ -18,4 +18,8 @@ public class TodoItem implements Serializable {
         this.task_name = description;
     }
 
+    public status getStatus(TodoItem item) {
+        return item.curr_status;
+    }
+
 }

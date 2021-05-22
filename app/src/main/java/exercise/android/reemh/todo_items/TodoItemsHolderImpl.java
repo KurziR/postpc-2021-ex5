@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,18 +74,32 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
   @Override
   public void deleteItem(TodoItem item) {
     try {
-      for (int i = 0; i < toDoesAllList.size(); i++) {
+      for (int i = 0; i < toDoesDoneList.size(); i++) {
         TodoItem curr = toDoesDoneList.get(i);
         if (item.equals(curr)) {
-          if (curr.curr_status == TodoItem.status.DONE) {
-            toDoesDoneList.remove(curr);
+          for (int j = 0; j < toDoesAllList.size(); j++) {
+            TodoItem currInAll = toDoesAllList.get(j);
+            if (item.equals(currInAll)) {
+              toDoesDoneList.remove(curr);
+              toDoesAllList.remove(currInAll);
+              return;
+            }
           }
-          else {
-            toDoesInProgressList.remove(curr);
-          }
-          toDoesAllList.remove(toDoesAllList.get(i));
         }
       }
+      for (int i = 0; i < toDoesInProgressList.size(); i++) {
+        TodoItem curr = toDoesInProgressList.get(i);
+        if (item.equals(curr)) {
+          for (int j = 0; j < toDoesAllList.size(); j++) {
+            TodoItem currInAll = toDoesAllList.get(j);
+            if (item.equals(currInAll)) {
+              toDoesInProgressList.remove(curr);
+              toDoesAllList.remove(currInAll);
+              return;
+            }
+          }
+          }
+        }
     } catch (NullPointerException e) {
       return;
     }

@@ -1,9 +1,13 @@
 package exercise.android.reemh.todo_items;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,7 +32,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
     @NonNull
     @Override
     public ToDoHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_one_todo, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_todo_item, parent, false);
         return new ToDoHolder(view);
     }
 
@@ -39,17 +43,47 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
         TodoItem todoItem = toDoesImpl.getToDo(position);
         String toDoTask = todoItem.task_name;
         holder.editTextTask.setText(toDoTask); // set edit-text as disabled (user cant input text)
-        holder.checkBox.isChecked();
+        if (todoItem.getStatus(todoItem) == TodoItem.status.DONE) {
+            holder.checkBox.setChecked(true);
+        }
+        else {
+            holder.checkBox.setChecked(false);
+        }
 
-        holder.checkBox.setOnClickListener(v -> {
-            if(holder.checkBox.isChecked()) {
-                toDoesImpl.markItemInProgress(todoItem);
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // the task in "DONE" status
+                if(isChecked) {
+                    toDoesImpl.markItemInProgress(todoItem);
+                    holder.checkBox.setChecked(false);
+                    holder.editTextTask.setPaintFlags(holder.editTextTask.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+                }
+                // the task in "IN-PROGRESS" status
+                else {
+                    toDoesImpl.markItemDone(todoItem);
+                    holder.checkBox.setChecked(true);
+                    holder.editTextTask.setPaintFlags(holder.editTextTask.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                }
+                notifyDataSetChanged();
             }
-            else {
-                toDoesImpl.markItemDone(todoItem);
-            }
-            notifyDataSetChanged();
         });
+
+        //        holder.checkBox.setOnCheckedChangeListener(v -> {
+//            // the task in "DONE" status
+//            if(holder.checkBox.isChecked()) {
+//                toDoesImpl.markItemInProgress(todoItem);
+//                holder.checkBox.setChecked(false);
+//                holder.editTextTask.setPaintFlags(holder.editTextTask.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+//            }
+//            // the task in "IN-PROGRESS" status
+//            else {
+//                toDoesImpl.markItemDone(todoItem);
+//                holder.checkBox.setChecked(true);
+//                holder.editTextTask.setPaintFlags(holder.editTextTask.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+//            }
+//            notifyDataSetChanged();
+//        });
 
         holder.editTextTask.setOnClickListener(v -> {
             // todo ?????

@@ -20,13 +20,21 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
 
   public TodoItemsHolder holder = null;
+  private static final String BUNDLE_HOLDER = "holder";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    holder = new TodoItemsHolderImpl();
+    if (savedInstanceState != null) {
+      holder = (TodoItemsHolder) savedInstanceState.getSerializable(BUNDLE_HOLDER);
+    }
+    if (holder == null) {
+      holder = new TodoItemsHolderImpl();
+    }
+
+    //holder = new TodoItemsHolderImpl();
 
     RecyclerView recyclerTodoItemsList= findViewById(R.id.recyclerTodoItemsList);
     ToDoAdapter adapter = new ToDoAdapter(holder);
@@ -41,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton buttonCreateTodoItem = findViewById(R.id.buttonCreateTodoItem);
     EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
-
-
 
     editTextInsertTask.setText(""); // cleanup text in edit-text
     editTextInsertTask.setEnabled(true); // set edit-text as enabled (user can input text)
@@ -64,25 +70,27 @@ public class MainActivity extends AppCompatActivity {
         return;
       holder.addNewInProgressItem(userInputString);
       editTextInsertTask.setText(""); // cleanup text in edit-text
-      });
+      recyclerTodoItemsList.getAdapter().notifyDataSetChanged();
+    });
   }
 
   @Override
   protected void onSaveInstanceState(@NonNull Bundle outState) {
-    super.onSaveInstanceState(outState);
     // TODO: put relevant data into bundle as you see fit
     EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
     String userInputString = editTextInsertTask.getText().toString();
-    outState.putString("userInputString", userInputString);
+    outState.putSerializable(BUNDLE_HOLDER, holder);
+    outState.putString("userInput", userInputString);
+    super.onSaveInstanceState(outState);
   }
 
   @Override
   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
     super.onRestoreInstanceState(savedInstanceState);
     // TODO: load data from bundle and set screen state (see spec below)
+    holder = (TodoItemsHolder) savedInstanceState.getSerializable(BUNDLE_HOLDER);
+    String userInputString = savedInstanceState.getString("userInput");
     EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
-    String userInputString = editTextInsertTask.getText().toString();
-    userInputString = savedInstanceState.getString("userInputString");
     editTextInsertTask.setText(userInputString);
   }
 
