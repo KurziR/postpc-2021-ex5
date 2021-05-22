@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
       holder = new TodoItemsHolderImpl();
     }
 
-    //holder = new TodoItemsHolderImpl();
-
     RecyclerView recyclerTodoItemsList= findViewById(R.id.recyclerTodoItemsList);
     ToDoAdapter adapter = new ToDoAdapter(holder);
     recyclerTodoItemsList.setAdapter(adapter);
