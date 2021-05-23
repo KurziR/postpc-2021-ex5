@@ -33,7 +33,10 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
 
   @Override
   public List<TodoItem> getCurrentItems() {
-    return toDoesAllList;
+    List<TodoItem> toDoesList = new ArrayList<TodoItem>();
+    toDoesList.addAll(toDoesInProgressList);
+    toDoesList.addAll(toDoesDoneList);
+    return toDoesList;
   }
 
   @Override
