@@ -1,5 +1,8 @@
 package exercise.android.reemh.todo_items;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,21 +12,43 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
-// TODO: implement!
 public class TodoItemsHolderImpl implements TodoItemsHolder{
 
   List<TodoItem> toDoesDoneList = null;
   List<TodoItem> toDoesInProgressList = null;
   List<TodoItem> toDoesAllList = null;
+  SharedPreferences sp;
+  Context context;
 
-  public TodoItemsHolderImpl() {
+  public TodoItemsHolderImpl(Context context) {
     toDoesDoneList = new ArrayList<TodoItem>();
     toDoesInProgressList = new ArrayList<TodoItem>();
     toDoesAllList = new ArrayList<TodoItem>();
+    this.context = context;
+    this.sp = context.getSharedPreferences("local_db_todo", Context.MODE_PRIVATE);
+    initializeFromSp();
+  }
+
+  private void initializeFromSp() {
+    Set<String> keys = sp.getAll().keySet();
+    for (String key:keys) {
+      String toDoToString = sp.getString(key, null);
+      TodoItem todo = TodoItem.stringToDoTo(toDoToString);
+      if (todo.curr_status == TodoItem.status.DONE) {
+        toDoesDoneList.add(0, todo);
+      }
+      else {
+        toDoesInProgressList.add(0, todo);
+      }
+      toDoesAllList.add(0, todo);
+    }
   }
 
   @Override
@@ -41,9 +66,14 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
 
   @Override
   public void addNewInProgressItem(String description) {
-    TodoItem new_item = new TodoItem(description);
+    String newId = UUID.randomUUID().toString();
+    TodoItem new_item = new TodoItem(newId, description);
     toDoesInProgressList.add(0, new_item); // add the item in the beginning of the list
-   combineLists();
+    combineLists();
+    String toDoToString = TodoItem.toDoToString(new_item);
+    SharedPreferences.Editor editor = sp.edit();
+    editor.putString(newId, toDoToString);
+    editor.apply();
   }
 
   @Override
@@ -55,6 +85,7 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
         toDoesDoneList.add(0, curr);
         toDoesInProgressList.remove(curr);
         combineLists();
+        updateList(curr);
         return;
       }
     }
@@ -69,6 +100,7 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
         toDoesInProgressList.add(0, curr);
         toDoesDoneList.remove(curr);
         combineLists();
+        updateList(curr);
         return;
       }
     }
@@ -85,7 +117,6 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
             if (item.equals(currInAll)) {
               toDoesDoneList.remove(curr);
               toDoesAllList.remove(currInAll);
-              return;
             }
           }
         }
@@ -98,11 +129,13 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
             if (item.equals(currInAll)) {
               toDoesInProgressList.remove(curr);
               toDoesAllList.remove(currInAll);
-              return;
             }
           }
           }
         }
+      SharedPreferences.Editor editor = sp.edit();
+      editor.remove(item.id);
+      editor.apply();
     } catch (NullPointerException e) {
       return;
     }
@@ -112,5 +145,12 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
     toDoesAllList.clear();
     toDoesAllList.addAll(toDoesInProgressList);
     toDoesAllList.addAll(toDoesDoneList);
+  }
+
+  public void updateList(TodoItem curr) {
+    String toDoToString = TodoItem.toDoToString(curr);
+    SharedPreferences.Editor editor = sp.edit();
+    editor.putString(curr.id, toDoToString);
+    editor.apply();
   }
 }

@@ -1,9 +1,11 @@
 package exercise.android.reemh.todo_items;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
+import java.util.UUID;
 
 public class TodoItem implements Serializable {
-  // TODO: edit this class as you want
 
     enum status {
         IN_PROGRESS,
@@ -12,8 +14,10 @@ public class TodoItem implements Serializable {
 
     status curr_status;
     String task_name;
+    String id;
 
-    TodoItem(String description){
+    TodoItem(String id, String description){
+        this.id = id;
         this.curr_status = status.IN_PROGRESS;
         this.task_name = description;
     }
@@ -24,6 +28,20 @@ public class TodoItem implements Serializable {
 
     public void setStatus(status status) {
         this.curr_status = status;
+    }
+
+    public static String toDoToString(TodoItem todo) {
+        String id = todo.id;
+        TodoItem myTodo = new TodoItem(id, todo.task_name);
+        Gson gson = new Gson();
+        String toDoAsString = gson.toJson(myTodo);
+        return toDoAsString;
+    }
+
+    public static TodoItem stringToDoTo(String todo) {
+        Gson gson = new Gson();
+        TodoItem todoObj = gson.fromJson(todo, TodoItem.class);
+        return todoObj;
     }
 
 }
