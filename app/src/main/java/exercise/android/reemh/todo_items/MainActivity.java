@@ -29,44 +29,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     holder.allLiveDataPublic.observe(this, todoItems -> adapter.toDoesList(holder.getCurrentItems()));
+
+    holder.doneLiveDataPublic.observe(this, todoItems -> adapter.doneList(holder.getDoneItems()));
+    holder.inProgressLiveDataPublic.observe(this, todoItems -> adapter.inProgressList(holder.getInProgressItems()));
+
     RecyclerView recyclerTodoItemsList= findViewById(R.id.recyclerTodoItemsList);
     this.adapter = new ToDoAdapter(this.holder);
     recyclerTodoItemsList.setAdapter(this.adapter);
     recyclerTodoItemsList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
 
-    adapter.setCheckBoxListener(((position, holder) -> {
-      if (holder.checkBox.isChecked()){
-        this.holder.markItemDone(this.holder.getAllList().get(position));
-      }
-      else this.holder.markItemInProgress(this.holder.getAllList().get(position));
-    }));
-
     adapter.setRemoveListener(((position, holder) -> {
         this.holder.deleteItem(this.holder.getAllList().get(position));
     }));
 
-
-//    holder.getInProgressLiveDataPublic().observe(this, new Observer<List<TodoItem>>() {
-//      @Override
-//      public void onChanged(List<TodoItem> todo){
-////        adapter.notifyDataSetChanged();
-//      }
-//    });
-//
-//    holder.getDoneLiveDataPublic().observe(this, new Observer<List<TodoItem>>() {
-//      @Override
-//      public void onChanged(List<TodoItem> todo){
-////        adapter.notifyDataSetChanged();
-//      }
-//    });
-
-    holder.getAllLiveDataPublic().observe(this, new Observer<List<TodoItem>>() {
-      @Override
-      public void onChanged(List<TodoItem> todo){
-        Log.e("stom", "onChanged: I got here" );
-        adapter.notifyDataSetChanged();
-      }
-    });
 
     FloatingActionButton buttonCreateTodoItem = findViewById(R.id.buttonCreateTodoItem);
     EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);

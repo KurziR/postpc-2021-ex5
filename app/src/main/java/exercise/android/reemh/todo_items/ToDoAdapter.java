@@ -15,9 +15,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
 
     private TodoItemsHolder toDoesImpl = null;
     private ItemClickListener checkBokListener;
-    private ItemClickListener editTextListener;
     private ItemClickListener removeListener;
+    private ItemClickListener editTextListener;
     private final ArrayList<TodoItem> toDoesAllList = new ArrayList<>();
+    private final ArrayList<TodoItem> toDoesDoneList = new ArrayList<>();
+    private final ArrayList<TodoItem> toDoesInProgressList = new ArrayList<>();
 
     public ToDoAdapter(TodoItemsHolder holder) {
         toDoesImpl = holder;
@@ -41,6 +43,18 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
         notifyDataSetChanged();
     }
 
+    public void doneList(List<TodoItem> newItems){
+        toDoesDoneList.clear();
+        toDoesDoneList.addAll(newItems);
+        notifyDataSetChanged();
+    }
+
+    public void inProgressList(List<TodoItem> newItems){
+        toDoesInProgressList.clear();
+        toDoesInProgressList.addAll(newItems);
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ToDoHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,21 +70,30 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
         TodoItem todoItem = toDoesImpl.getToDo(position);
         String toDoTask = todoItem.task_name;
 
+        holder.checkBox.setChecked(todoItem.isDone());
+
         holder.editTextTask.setText(toDoTask); // set edit-text as disabled (user cant input text)
 
-        if (todoItem.getStatus() == TodoItem.status.DONE) {
-            holder.checkBox.setChecked(true);
+        if (todoItem.isDone()) {
             holder.editTextTask.setPaintFlags(holder.editTextTask.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
-            holder.checkBox.setChecked(false);
             holder.editTextTask.setPaintFlags(holder.editTextTask.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
-        holder.checkBox.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                checkBokListener.onItemClick(position, holder);
-                notifyDataSetChanged();}
+//        holder.checkBox.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v){
+//                checkBokListener.onItemClick(position, holder);
+//                notifyDataSetChanged();}
+
+        holder.checkBox.setOnClickListener(v -> {
+            if (todoItem.isDone()){
+                toDoesImpl.markItemInProgress(todoItem);
+            }
+            else{
+                toDoesImpl.markItemDone(todoItem);
+            }
+            notifyDataSetChanged();
         });
 
         holder.editTextTask.setOnClickListener(new View.OnClickListener(){

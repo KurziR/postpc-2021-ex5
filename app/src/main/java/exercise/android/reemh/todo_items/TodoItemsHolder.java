@@ -41,8 +41,6 @@ public interface TodoItemsHolder extends Serializable {
    */
   void deleteItem(TodoItem item);
 
-  LiveData<List<TodoItem>> getAllLiveDataPublic();
-
   List<TodoItem> getAllList();
 
 //  List<TodoItem> getInProgressList();

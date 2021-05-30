@@ -34,6 +34,10 @@ public class TodoItem implements Serializable {
         this.curr_status = status;
     }
 
+    public boolean isDone(){
+        return curr_status == status.DONE;
+    }
+
     public static String toDoToString(TodoItem todo) {
         String id = todo.id;
         TodoItem myTodo = new TodoItem(id, todo.task_name);

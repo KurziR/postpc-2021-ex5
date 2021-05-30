@@ -56,9 +56,6 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
     initializeFromSp();
   }
 
-  public LiveData<List<TodoItem>> getAllLiveDataPublic() {
-    return allLiveDataPublic;
-  }
 
   public List<TodoItem> getAllList() {
     return toDoesAllList;
@@ -92,6 +89,18 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
     List<TodoItem> toDoesList = new ArrayList<TodoItem>();
     toDoesList.addAll(toDoesInProgressList);
     toDoesList.addAll(toDoesDoneList);
+    return toDoesList;
+  }
+
+  public List<TodoItem> getDoneItems() {
+    List<TodoItem> toDoesList = new ArrayList<TodoItem>();
+    toDoesList.addAll(toDoesDoneList);
+    return toDoesList;
+  }
+
+  public List<TodoItem> getInProgressItems() {
+    List<TodoItem> toDoesList = new ArrayList<TodoItem>();
+    toDoesList.addAll(toDoesInProgressList);
     return toDoesList;
   }
 
