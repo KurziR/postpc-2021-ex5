@@ -1,5 +1,6 @@
 package exercise.android.reemh.todo_items;
 
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.Serializable;
@@ -9,10 +10,14 @@ import java.util.List;
 // TODO: feel free to add/change/remove methods as you want
 public interface TodoItemsHolder extends Serializable {
 
-  /** Get a copy of the current item */
+  /**
+   * Get a copy of the current item
+   */
   TodoItem getToDo(int position);
 
-  /** Get a copy of the current items list */
+  /**
+   * Get a copy of the current items list
+   */
   List<TodoItem> getCurrentItems();
 
   /**
@@ -21,12 +26,31 @@ public interface TodoItemsHolder extends Serializable {
    */
   void addNewInProgressItem(String description);
 
-  /** mark the @param item as DONE */
+  /**
+   * mark the @param item as DONE
+   */
   void markItemDone(TodoItem item);
 
-  /** mark the @param item as IN-PROGRESS */
+  /**
+   * mark the @param item as IN-PROGRESS
+   */
   void markItemInProgress(TodoItem item);
 
-  /** delete the @param item */
+  /**
+   * delete the @param item
+   */
   void deleteItem(TodoItem item);
+
+  LiveData<List<TodoItem>> getAllLiveDataPublic();
+
+  List<TodoItem> getAllList();
+
+//  List<TodoItem> getInProgressList();
+//
+//  List<TodoItem> getDoneList();
+//
+//  LiveData<List<TodoItem>> getInProgressLiveDataPublic();
+//
+//  LiveData<List<TodoItem>> getDoneLiveDataPublic();
+
 }

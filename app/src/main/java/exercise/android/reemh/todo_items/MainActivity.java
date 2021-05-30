@@ -4,45 +4,69 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.SharedPreferences;
+import androidx.lifecycle.Observer;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+import android.util.Log;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-  public TodoItemsHolder holder = null;
+  public TodoItemsHolderImpl holder = null;
   private static final String BUNDLE_HOLDER = "holder";
+  private ToDoAdapter adapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    if (savedInstanceState != null) {
-      holder = (TodoItemsHolder) savedInstanceState.getSerializable(BUNDLE_HOLDER);
-    }
     if (holder == null) {
-      holder = new TodoItemsHolderImpl(this);
+      holder = (TodoItemsHolderImpl) DataApp.getInstance().getDataApp();
     }
 
-    DataApp currApp = (DataApp) getApplicationContext();
-
+    holder.allLiveDataPublic.observe(this, todoItems -> adapter.toDoesList(holder.getCurrentItems()));
     RecyclerView recyclerTodoItemsList= findViewById(R.id.recyclerTodoItemsList);
-    ToDoAdapter adapter = new ToDoAdapter(holder);
-    recyclerTodoItemsList.setAdapter(adapter);
-    recyclerTodoItemsList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-    );
+    this.adapter = new ToDoAdapter(this.holder);
+    recyclerTodoItemsList.setAdapter(this.adapter);
+    recyclerTodoItemsList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+
+    adapter.setCheckBoxListener(((position, holder) -> {
+      if (holder.checkBox.isChecked()){
+        this.holder.markItemDone(this.holder.getAllList().get(position));
+      }
+      else this.holder.markItemInProgress(this.holder.getAllList().get(position));
+    }));
+
+    adapter.setRemoveListener(((position, holder) -> {
+        this.holder.deleteItem(this.holder.getAllList().get(position));
+    }));
+
+
+//    holder.getInProgressLiveDataPublic().observe(this, new Observer<List<TodoItem>>() {
+//      @Override
+//      public void onChanged(List<TodoItem> todo){
+////        adapter.notifyDataSetChanged();
+//      }
+//    });
+//
+//    holder.getDoneLiveDataPublic().observe(this, new Observer<List<TodoItem>>() {
+//      @Override
+//      public void onChanged(List<TodoItem> todo){
+////        adapter.notifyDataSetChanged();
+//      }
+//    });
+
+    holder.getAllLiveDataPublic().observe(this, new Observer<List<TodoItem>>() {
+      @Override
+      public void onChanged(List<TodoItem> todo){
+        Log.e("stom", "onChanged: I got here" );
+        adapter.notifyDataSetChanged();
+      }
+    });
 
     FloatingActionButton buttonCreateTodoItem = findViewById(R.id.buttonCreateTodoItem);
     EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
@@ -68,13 +92,13 @@ public class MainActivity extends AppCompatActivity {
       holder.addNewInProgressItem(userInputString);
       editTextInsertTask.setText(""); // cleanup text in edit-text
       recyclerTodoItemsList.getAdapter().notifyDataSetChanged();
+      adapter.notifyDataSetChanged();
     });
 
   }
 
   @Override
   protected void onSaveInstanceState(@NonNull Bundle outState) {
-    // TODO: put relevant data into bundle as you see fit
     EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
     String userInputString = editTextInsertTask.getText().toString();
     outState.putSerializable(BUNDLE_HOLDER, holder);
@@ -85,8 +109,7 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
     super.onRestoreInstanceState(savedInstanceState);
-    // TODO: load data from bundle and set screen state (see spec below)
-    holder = (TodoItemsHolder) savedInstanceState.getSerializable(BUNDLE_HOLDER);
+    holder = (TodoItemsHolderImpl) savedInstanceState.getSerializable(BUNDLE_HOLDER);
     String userInputString = savedInstanceState.getString("userInput");
     EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
     editTextInsertTask.setText(userInputString);

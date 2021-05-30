@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -24,16 +26,42 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
   List<TodoItem> toDoesDoneList = null;
   List<TodoItem> toDoesInProgressList = null;
   List<TodoItem> toDoesAllList = null;
-  SharedPreferences sp;
-  Context context;
+  private final SharedPreferences sp;
+  private final Context context;
+
+  private final MutableLiveData<List<TodoItem>> inProgressLiveDataMutable;
+  public final LiveData<List<TodoItem>> inProgressLiveDataPublic;
+
+  private final MutableLiveData<List<TodoItem>> doneLiveDataMutable;
+  public final LiveData<List<TodoItem>> doneLiveDataPublic;
+
+  private final MutableLiveData<List<TodoItem>> allLiveDataMutable;
+  public final LiveData<List<TodoItem>> allLiveDataPublic;
 
   public TodoItemsHolderImpl(Context context) {
+    inProgressLiveDataMutable = new MutableLiveData<>();
+    inProgressLiveDataPublic = inProgressLiveDataMutable;
+
+    doneLiveDataMutable = new MutableLiveData<>();
+    doneLiveDataPublic = doneLiveDataMutable;
+
+    allLiveDataMutable = new MutableLiveData<>();
+    allLiveDataPublic = allLiveDataMutable;
+
     toDoesDoneList = new ArrayList<TodoItem>();
     toDoesInProgressList = new ArrayList<TodoItem>();
     toDoesAllList = new ArrayList<TodoItem>();
     this.context = context;
     this.sp = context.getSharedPreferences("local_db_todo", Context.MODE_PRIVATE);
     initializeFromSp();
+  }
+
+  public LiveData<List<TodoItem>> getAllLiveDataPublic() {
+    return allLiveDataPublic;
+  }
+
+  public List<TodoItem> getAllList() {
+    return toDoesAllList;
   }
 
   private void initializeFromSp() {
@@ -43,17 +71,20 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
       TodoItem todo = TodoItem.stringToDoTo(toDoToString);
       if (todo.curr_status == TodoItem.status.DONE) {
         toDoesDoneList.add(0, todo);
+        doneLiveDataMutable.setValue(new ArrayList(toDoesDoneList));
       }
       else {
         toDoesInProgressList.add(0, todo);
+        inProgressLiveDataMutable.setValue(new ArrayList(toDoesInProgressList));
       }
       toDoesAllList.add(0, todo);
+      allLiveDataMutable.setValue(new ArrayList(toDoesAllList));
     }
   }
 
   @Override
-  public TodoItem getToDo(int position) {
-    return toDoesAllList.get(position);
+  public TodoItem getToDo(int id) {
+    return toDoesAllList.get(id);
   }
 
   @Override
@@ -74,36 +105,28 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
     SharedPreferences.Editor editor = sp.edit();
     editor.putString(newId, toDoToString);
     editor.apply();
+
+    allLiveDataMutable.setValue(new ArrayList(toDoesAllList));
+    inProgressLiveDataMutable.setValue(new ArrayList(toDoesInProgressList));
   }
 
   @Override
   public void markItemDone(TodoItem item) {
-    for(int i=0; i<toDoesInProgressList.size(); i++) {
-      TodoItem curr = toDoesInProgressList.get(i);
-      if(item.equals(curr)) {
-        curr.setStatus(TodoItem.status.DONE);
-        toDoesDoneList.add(0, curr);
-        toDoesInProgressList.remove(curr);
-        combineLists();
-        updateList(curr);
-        return;
-      }
+    item.setStatus(TodoItem.status.DONE);
+    toDoesInProgressList.remove(item);
+    toDoesDoneList.add(item);
+    combineLists();
+    updateList(item);
     }
-  }
+
 
   @Override
   public void markItemInProgress(TodoItem item) {
-    for(int i=0; i<toDoesDoneList.size(); i++) {
-      TodoItem curr = toDoesDoneList.get(i);
-      if(item.equals(curr)) {
-        curr.setStatus(TodoItem.status.IN_PROGRESS);
-        toDoesInProgressList.add(0, curr);
-        toDoesDoneList.remove(curr);
-        combineLists();
-        updateList(curr);
-        return;
-      }
-    }
+    item.setStatus(TodoItem.status.IN_PROGRESS);
+    toDoesDoneList.remove(item);
+    toDoesInProgressList.add(item);
+    combineLists();
+    updateList(item);
   }
 
   @Override
@@ -117,6 +140,12 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
             if (item.equals(currInAll)) {
               toDoesDoneList.remove(curr);
               toDoesAllList.remove(currInAll);
+              SharedPreferences.Editor editor = sp.edit();
+              editor.remove(item.id);
+              editor.apply();
+              allLiveDataMutable.setValue(new ArrayList(toDoesAllList));
+              doneLiveDataMutable.setValue(new ArrayList(toDoesDoneList));
+              return;
             }
           }
         }
@@ -129,15 +158,18 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
             if (item.equals(currInAll)) {
               toDoesInProgressList.remove(curr);
               toDoesAllList.remove(currInAll);
+              SharedPreferences.Editor editor = sp.edit();
+              editor.remove(item.id);
+              editor.apply();
+              allLiveDataMutable.setValue(new ArrayList(toDoesAllList));
+              inProgressLiveDataMutable.setValue(new ArrayList(toDoesInProgressList));
+              return;
             }
           }
           }
         }
-      SharedPreferences.Editor editor = sp.edit();
-      editor.remove(item.id);
-      editor.apply();
+
     } catch (NullPointerException e) {
-      return;
     }
   }
 
@@ -152,5 +184,10 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
     SharedPreferences.Editor editor = sp.edit();
     editor.putString(curr.id, toDoToString);
     editor.apply();
+    allLiveDataMutable.setValue(new ArrayList(toDoesAllList));
+    doneLiveDataMutable.setValue(new ArrayList(toDoesDoneList));
+    inProgressLiveDataMutable.setValue(new ArrayList(toDoesInProgressList));
+
   }
+
 }
