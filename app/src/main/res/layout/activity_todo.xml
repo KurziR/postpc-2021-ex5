@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <Switch
+        android:id="@+id/status_button"
+        android:layout_width="wrap_content"
+        android:layout_height="@+id/editDescription"
+        android:text="Done"
+        app:layout_constraintStart_toEndOf="@+id/editDescription"
+        app:layout_constraintBottom_toBottomOf="@+id/editDescription"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_constraintVertical_bias="0.32" />
+
+    <EditText
+        android:id="@+id/editDescription"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:elevation="4dp"
+        android:background="@color/cardview_light_background"
+        android:maxLines="1"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:text="@string/hii_mather_fuckerrrr"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.452"/>
+
+    <EditText
+        android:id="@+id/creationDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="Creation Date:"
+        android:inputType="date"
+        app:layout_constraintTop_toBottomOf="@+id/editDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/lastModifiedDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="last Modified:"
+        android:inputType="date"
+        app:layout_constraintTop_toBottomOf="@+id/editDescription"
+        app:layout_constraintStart_toEndOf="@+id/creationDate"/>
+
+    <EditText
+        android:id="@+id/creation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="date"
+        app:layout_constraintTop_toBottomOf="@+id/creationDate"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/lastModified"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="date"
+        app:layout_constraintTop_toBottomOf="@+id/lastModifiedDate"
+        app:layout_constraintStart_toEndOf="@+id/creation"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
