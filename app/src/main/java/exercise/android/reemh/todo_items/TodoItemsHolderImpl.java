@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
@@ -196,7 +197,16 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
     allLiveDataMutable.setValue(new ArrayList(toDoesAllList));
     doneLiveDataMutable.setValue(new ArrayList(toDoesDoneList));
     inProgressLiveDataMutable.setValue(new ArrayList(toDoesInProgressList));
+  }
 
+  @Nullable
+  public TodoItem getToDoItem(String itemId) {
+    for (TodoItem item: toDoesAllList) {
+      if (item.getId().equals(itemId)) {
+        return item;
+      }
+    }
+    return null;
   }
 
 }

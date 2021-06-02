@@ -4,12 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
 
     if (holder == null) {
-      holder = (TodoItemsHolderImpl) DataApp.getInstance().getDataApp();
+      holder = DataApp.getInstance().getDataApp();
     }
 
     holder.allLiveDataPublic.observe(this, todoItems -> adapter.toDoesList(holder.getCurrentItems()));
@@ -39,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     adapter.setRemoveListener(((position, holder) -> {
         this.holder.deleteItem(this.holder.getAllList().get(position));
     }));
-
 
     FloatingActionButton buttonCreateTodoItem = findViewById(R.id.buttonCreateTodoItem);
     EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         return;
       holder.addNewInProgressItem(userInputString);
       editTextInsertTask.setText(""); // cleanup text in edit-text
-      recyclerTodoItemsList.getAdapter().notifyDataSetChanged();
+      Objects.requireNonNull(recyclerTodoItemsList.getAdapter()).notifyDataSetChanged();
       adapter.notifyDataSetChanged();
     });
 

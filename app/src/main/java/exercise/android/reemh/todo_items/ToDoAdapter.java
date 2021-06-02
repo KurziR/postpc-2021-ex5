@@ -1,6 +1,7 @@
 package exercise.android.reemh.todo_items;
 
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,13 +11,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+
+import static androidx.core.content.ContextCompat.startActivity;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
 
     private TodoItemsHolder toDoesImpl = null;
-    private ItemClickListener checkBokListener;
+//    private ItemClickListener checkBokListener;
     private ItemClickListener removeListener;
-    private ItemClickListener editTextListener;
+    ItemClickListener editTextListener;
     private final ArrayList<TodoItem> toDoesAllList = new ArrayList<>();
     private final ArrayList<TodoItem> toDoesDoneList = new ArrayList<>();
     private final ArrayList<TodoItem> toDoesInProgressList = new ArrayList<>();
@@ -29,9 +33,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
         void onItemClick(int position, ToDoHolder holder);
     }
 
-    public void setCheckBoxListener(ItemClickListener checkBokListener){
-        this.checkBokListener = checkBokListener;
-    }
+//    public void setCheckBoxListener(ItemClickListener checkBokListener){
+//        this.checkBokListener = checkBokListener;
+//    }
 
     public void setRemoveListener(ItemClickListener removeListener){
         this.removeListener = removeListener;
@@ -64,8 +68,6 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ToDoHolder holder, int position) {
-        Log.e("TAG", "onBindViewHolder: " );
-
         // recycle the given holder with todoitem at position
         TodoItem todoItem = toDoesImpl.getToDo(position);
         String toDoTask = todoItem.task_name;
@@ -80,12 +82,6 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
             holder.editTextTask.setPaintFlags(holder.editTextTask.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
-//        holder.checkBox.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v){
-//                checkBokListener.onItemClick(position, holder);
-//                notifyDataSetChanged();}
-
         holder.checkBox.setOnClickListener(v -> {
             if (todoItem.isDone()){
                 toDoesImpl.markItemInProgress(todoItem);
@@ -96,44 +92,19 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
             notifyDataSetChanged();
         });
 
-        holder.editTextTask.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
+        holder.editTextTask.setOnClickListener(v -> {
+            if (this.editTextListener != null) {
                 editTextListener.onItemClick(position, holder);
-                notifyDataSetChanged();}
-        });
+                Intent intent = new Intent(v.getContext(), ToDoActivity.class);
+                intent.putExtra("todoToEdit", toDoesImpl.getToDo(position).getId());
+                v.getContext().startActivity(intent);
+            }
+            });
 
-        holder.removeToDo.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                removeListener.onItemClick(position, holder);
-                notifyDataSetChanged();}
-        });
+        holder.removeToDo.setOnClickListener(v -> {
+            toDoesImpl.deleteItem(todoItem);
+            notifyDataSetChanged();});
 
-
-//        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                // the task in "DONE" status
-//                if (!isChecked) {
-//                    toDoesImpl.markItemInProgress(todoItem);
-//                }
-//                // the task in "IN-PROGRESS" status
-//                else {
-//                    toDoesImpl.markItemDone(todoItem);
-//                }
-//                //notifyDataSetChanged();
-//            }
-//        });
-
-//        holder.editTextTask.setOnClickListener(v -> {
-//            holder.editTextTask.setEnabled(true);
-//        });
-//
-//        holder.removeToDo.setOnClickListener(v -> {
-//            toDoesImpl.deleteItem(todoItem);
-//            notifyDataSetChanged();
-//        });
     }
 
     @Override

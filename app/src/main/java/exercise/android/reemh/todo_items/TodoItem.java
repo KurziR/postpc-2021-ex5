@@ -28,11 +28,11 @@ public class TodoItem implements Serializable {
     }
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public status getStatus() {
-        return curr_status;
+        return this.curr_status;
     }
 
     public void setStatus(status status) {
