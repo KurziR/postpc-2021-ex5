@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class ToDoActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class ToDoActivity extends AppCompatActivity {
+
+    public  TodoItemsHolderImpl holder = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_todo);
+        setContentView(R.layout.edit_todo_activity);
+
 
         TextView result = findViewById(R.id.result);
 

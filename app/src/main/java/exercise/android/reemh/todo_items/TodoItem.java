@@ -44,10 +44,8 @@ public class TodoItem implements Serializable {
     }
 
     public static String toDoToString(TodoItem todo) {
-        String id = todo.id;
-        TodoItem myTodo = new TodoItem(id, todo.task_name);
         Gson gson = new Gson();
-        String toDoAsString = gson.toJson(myTodo);
+        String toDoAsString = gson.toJson(todo);
         return toDoAsString;
     }
 
