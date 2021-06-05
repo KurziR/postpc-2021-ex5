@@ -1,16 +1,16 @@
 package exercise.android.reemh.todo_items;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
   private static final String BUNDLE_HOLDER = "holder";
   private ToDoAdapter adapter;
 
+  @RequiresApi(api = Build.VERSION_CODES.N)
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -29,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     holder.allLiveDataPublic.observe(this, todoItems -> adapter.toDoesList(holder.getCurrentItems()));
-
     holder.doneLiveDataPublic.observe(this, todoItems -> adapter.doneList(holder.getDoneItems()));
     holder.inProgressLiveDataPublic.observe(this, todoItems -> adapter.inProgressList(holder.getInProgressItems()));
 
@@ -37,10 +37,6 @@ public class MainActivity extends AppCompatActivity {
     this.adapter = new ToDoAdapter(this.holder);
     recyclerTodoItemsList.setAdapter(this.adapter);
     recyclerTodoItemsList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-
-    adapter.setRemoveListener(((position, holder) -> {
-        this.holder.deleteItem(this.holder.getAllList().get(position));
-    }));
 
     FloatingActionButton buttonCreateTodoItem = findViewById(R.id.buttonCreateTodoItem);
     EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
@@ -86,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
     editTextInsertTask.setText(userInputString);
   }
-
 }
 
 

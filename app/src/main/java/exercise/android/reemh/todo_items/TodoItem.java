@@ -1,9 +1,12 @@
 package exercise.android.reemh.todo_items;
 
+import android.os.Build;
 import android.widget.TextView;
+import androidx.annotation.RequiresApi;
 import com.google.gson.Gson;
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Date;
 
 public class TodoItem implements Serializable {
 
@@ -15,18 +18,19 @@ public class TodoItem implements Serializable {
         DONE
     }
 
-    String id;
-    String task_name;
-    status curr_status;
-    Calendar creationTime;
-    Calendar lastModified;
+    private final String id;
+    private String task_name;
+    private status curr_status;
+    private final Date creationTime;
+    private Date lastModified;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     TodoItem(String id, String description){
         this.id = id;
         this.curr_status = status.IN_PROGRESS;
         this.task_name = description;
-        this.creationTime = Calendar.getInstance();
-        this.lastModified = creationTime;
+        this.creationTime = new Date();
+        this.lastModified = new Date();
     }
 
     public String getId() {
@@ -41,16 +45,20 @@ public class TodoItem implements Serializable {
         this.curr_status = status;
     }
 
-    public Calendar getLastModified() {
+    public Date getLastModified() {
         return this.lastModified;
     }
 
-    public Calendar getCreationTime() {
+    public Date getCreationTime() {
         return this.creationTime;
     }
 
     public String getTaskName() {
         return this.task_name;
+    }
+
+    public void setTaskName(String description) {
+        this.task_name = description;
     }
 
     public boolean isDone(){
@@ -61,21 +69,11 @@ public class TodoItem implements Serializable {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
-
     public static TodoItem stringToDoTo(String todo) {
         Gson gson = new Gson();
         return gson.fromJson(todo, TodoItem.class);
     }
-
-    public static void calculateModifiedTime(Calendar last, TextView modifiedTime) {
-        long diffminutes = (Calendar.getInstance().getTimeInMillis() - last.getTimeInMillis()) / 60000;
-        if (diffminutes > NUMOFMININDAY) {
-            modifiedTime.setText(last.getTime().toString());
-        }
-        else if (diffminutes > NUMOFMININHOUR) {
-            modifiedTime.setText(("Today at " + (diffminutes / NUMOFMININHOUR)));
-        }
-        modifiedTime.setText((diffminutes + " minutes ago"));
+    public void setFinishTime(Date finishTime){
+        this.lastModified = finishTime;
     }
-
 }

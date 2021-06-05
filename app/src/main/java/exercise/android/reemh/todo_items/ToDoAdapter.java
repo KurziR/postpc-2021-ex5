@@ -1,9 +1,7 @@
 package exercise.android.reemh.todo_items;
 
-
 import android.content.Intent;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
-import static androidx.core.content.ContextCompat.startActivity;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
 
     private TodoItemsHolder toDoesImpl = null;
-//    private ItemClickListener checkBokListener;
-    private ItemClickListener removeListener;
     ItemClickListener editTextListener;
+    ItemClickListener removeListener;
     private final ArrayList<TodoItem> toDoesAllList = new ArrayList<>();
     private final ArrayList<TodoItem> toDoesDoneList = new ArrayList<>();
     private final ArrayList<TodoItem> toDoesInProgressList = new ArrayList<>();
@@ -31,14 +26,6 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
 
     public interface ItemClickListener{
         void onItemClick(int position, ToDoHolder holder);
-    }
-
-//    public void setCheckBoxListener(ItemClickListener checkBokListener){
-//        this.checkBokListener = checkBokListener;
-//    }
-
-    public void setRemoveListener(ItemClickListener removeListener){
-        this.removeListener = removeListener;
     }
 
     public void toDoesList(List<TodoItem> newItems){
@@ -70,7 +57,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
     public void onBindViewHolder(@NonNull ToDoHolder holder, int position) {
         // recycle the given holder with todoitem at position
         TodoItem todoItem = toDoesImpl.getToDo(position);
-        String toDoTask = todoItem.task_name;
+        String toDoTask = todoItem.getTaskName();
 
         holder.checkBox.setChecked(todoItem.isDone());
 
@@ -92,19 +79,20 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
             notifyDataSetChanged();
         });
 
-        holder.editTextTask.setOnClickListener(v -> {
+        holder.updateToDo.setOnClickListener(v -> {
             if (this.editTextListener != null) {
                 editTextListener.onItemClick(position, holder);
                 Intent intent = new Intent(v.getContext(), ToDoActivity.class);
-                intent.putExtra("todoToEdit", toDoesImpl.getToDo(position).getId());
+                intent.putExtra("toDoToEdit", toDoesImpl.getToDo(position).getId());
                 v.getContext().startActivity(intent);
+                notifyDataSetChanged();
             }
-            });
+        });
 
         holder.removeToDo.setOnClickListener(v -> {
             toDoesImpl.deleteItem(todoItem);
-            notifyDataSetChanged();});
-
+            notifyDataSetChanged();
+        });
     }
 
     @Override
@@ -115,5 +103,4 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
             return 0;
         }
     }
-
 }

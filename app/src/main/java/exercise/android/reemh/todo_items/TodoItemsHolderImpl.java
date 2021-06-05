@@ -2,19 +2,22 @@ package exercise.android.reemh.todo_items;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 public class TodoItemsHolderImpl implements TodoItemsHolder{
 
-  List<TodoItem> toDoesDoneList;
-  List<TodoItem> toDoesInProgressList;
-  List<TodoItem> toDoesAllList;
+  public List<TodoItem> toDoesDoneList;
+  public List<TodoItem> toDoesInProgressList;
+  public List<TodoItem> toDoesAllList;
   private final SharedPreferences sp;
 
   private final MutableLiveData<List<TodoItem>> inProgressLiveDataMutable;
@@ -54,12 +57,8 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
       if (sp.getString(key, null) == null){
         return;
       }
-      String toDoToString = sp.getString(key, null);
-      TodoItem todo = TodoItem.stringToDoTo(toDoToString);
-      if (todo == null){
-        return;
-      }
-      if (todo.curr_status == TodoItem.status.DONE) {
+      TodoItem todo = TodoItem.stringToDoTo(sp.getString(key, null));
+      if (todo.getStatus() == TodoItem.status.DONE) {
         toDoesDoneList.add(0, todo);
         doneLiveDataMutable.setValue(this.toDoesDoneList);
       }
@@ -93,6 +92,7 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
     return new ArrayList<>(toDoesInProgressList);
   }
 
+  @RequiresApi(api = Build.VERSION_CODES.N)
   @Override
   public void addNewInProgressItem(String description) {
     String newId = UUID.randomUUID().toString();
@@ -103,7 +103,6 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
     SharedPreferences.Editor editor = sp.edit();
     editor.putString(newId, toDoToString);
     editor.apply();
-
     allLiveDataMutable.setValue(this.toDoesAllList);
     inProgressLiveDataMutable.setValue(this.toDoesInProgressList);
   }
@@ -139,7 +138,7 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
               toDoesDoneList.remove(curr);
               toDoesAllList.remove(currInAll);
               SharedPreferences.Editor editor = sp.edit();
-              editor.remove(item.id);
+              editor.remove(item.getId());
               editor.apply();
               allLiveDataMutable.setValue(this.toDoesAllList);
               doneLiveDataMutable.setValue(this.toDoesDoneList);
@@ -157,7 +156,7 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
               toDoesInProgressList.remove(curr);
               toDoesAllList.remove(currInAll);
               SharedPreferences.Editor editor = sp.edit();
-              editor.remove(item.id);
+              editor.remove(item.getId());
               editor.apply();
               allLiveDataMutable.setValue(this.toDoesAllList);
               inProgressLiveDataMutable.setValue(this.toDoesInProgressList);
@@ -179,7 +178,7 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
   public void updateList(TodoItem curr) {
     String toDoToString = curr.toDoToString();
     SharedPreferences.Editor editor = sp.edit();
-    editor.putString(curr.id, toDoToString);
+    editor.putString(curr.getId(), toDoToString);
     editor.apply();
     allLiveDataMutable.setValue(this.toDoesAllList);
     doneLiveDataMutable.setValue(this.toDoesDoneList);
@@ -196,4 +195,25 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
     return null;
   }
 
+  @Override
+  public void setDescription(TodoItem oldItem, String description) {
+    for (TodoItem todoItem: this.toDoesAllList){
+      if (todoItem == oldItem){
+        todoItem.setTaskName(description);
+      }
+    }
+    combineLists();
+    updateList(oldItem);
+  }
+
+  @Override
+  public void setModifiedTime(TodoItem oldItem, Date newDate) {
+    for (TodoItem todoItem: this.toDoesAllList){
+      if (todoItem == oldItem){
+        todoItem.setFinishTime(newDate);
+      }
+    }
+    combineLists();
+    updateList(oldItem);
+  }
 }

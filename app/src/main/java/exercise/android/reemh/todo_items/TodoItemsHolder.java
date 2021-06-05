@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 
@@ -43,12 +44,8 @@ public interface TodoItemsHolder extends Serializable {
 
   List<TodoItem> getAllList();
 
-//  List<TodoItem> getInProgressList();
-//
-//  List<TodoItem> getDoneList();
-//
-//  LiveData<List<TodoItem>> getInProgressLiveDataPublic();
-//
-//  LiveData<List<TodoItem>> getDoneLiveDataPublic();
+  void setDescription(TodoItem oldItem, String description);
+
+  void setModifiedTime(TodoItem oldItem, Date newDate);
 
 }
