@@ -46,7 +46,6 @@ public class TodoItemsHolderImpl implements TodoItemsHolder{
     initializeFromSp();
   }
 
-
   public List<TodoItem> getAllList() {
     return toDoesAllList;
   }

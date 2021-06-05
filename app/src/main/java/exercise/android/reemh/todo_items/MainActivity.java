@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,7 +17,6 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
   public TodoItemsHolderImpl holder = null;
-  private static final String BUNDLE_HOLDER = "holder";
   private ToDoAdapter adapter;
 
   @RequiresApi(api = Build.VERSION_CODES.N)
@@ -63,24 +63,22 @@ public class MainActivity extends AppCompatActivity {
       Objects.requireNonNull(recyclerTodoItemsList.getAdapter()).notifyDataSetChanged();
       adapter.notifyDataSetChanged();
     });
-  }
+
+    adapter.editTextListener = item -> {
+      Intent intent = new Intent(this, ToDoActivity.class);
+      intent.putExtra("clicked_item", item.getId());
+      startActivity(intent);
+    };
+}
 
   @Override
   protected void onSaveInstanceState(@NonNull Bundle outState) {
-    EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
-    String userInputString = editTextInsertTask.getText().toString();
-    outState.putSerializable(BUNDLE_HOLDER, holder);
-    outState.putString("userInput", userInputString);
     super.onSaveInstanceState(outState);
   }
 
   @Override
   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
     super.onRestoreInstanceState(savedInstanceState);
-    holder = (TodoItemsHolderImpl) savedInstanceState.getSerializable(BUNDLE_HOLDER);
-    String userInputString = savedInstanceState.getString("userInput");
-    EditText editTextInsertTask = findViewById(R.id.editTextInsertTask);
-    editTextInsertTask.setText(userInputString);
   }
 }
 

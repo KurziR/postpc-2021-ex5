@@ -24,10 +24,6 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
         toDoesImpl = holder;
     }
 
-    public interface ItemClickListener{
-        void onItemClick(int position, ToDoHolder holder);
-    }
-
     public void toDoesList(List<TodoItem> newItems){
         toDoesAllList.clear();
         toDoesAllList.addAll(newItems);
@@ -81,7 +77,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoHolder> {
 
         holder.updateToDo.setOnClickListener(v -> {
             if (this.editTextListener != null) {
-                editTextListener.onItemClick(position, holder);
+                editTextListener.onItemClick(toDoesImpl.getToDo(position));
                 Intent intent = new Intent(v.getContext(), ToDoActivity.class);
                 intent.putExtra("toDoToEdit", toDoesImpl.getToDo(position).getId());
                 v.getContext().startActivity(intent);

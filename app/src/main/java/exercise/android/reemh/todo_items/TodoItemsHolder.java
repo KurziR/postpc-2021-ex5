@@ -1,8 +1,5 @@
 package exercise.android.reemh.todo_items;
 
-import androidx.lifecycle.LiveData;
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;

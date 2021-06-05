@@ -26,7 +26,6 @@ public class ToDoActivity extends AppCompatActivity {
     TextView creationTime;
     TextView modifiedTime;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +61,8 @@ public class ToDoActivity extends AppCompatActivity {
         checkBox.setChecked(editToDo.isDone());
         editTextTask.setText(editToDo.getTaskName());
         updateCreationTime();
-        creationTime.setText((CharSequence) editToDo.getCreationTime());
-        modifiedTime.setText((CharSequence) editToDo.getLastModified());
+        creationTime.setText(editToDo.getCreationTime().toString());
+        modifiedTime.setText(editToDo.getLastModified().toString());
 
         editTextTask.addTextChangedListener(new TextWatcher() {
             @Override

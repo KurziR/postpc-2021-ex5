@@ -1,17 +1,12 @@
 package exercise.android.reemh.todo_items;
 
 import android.os.Build;
-import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import com.google.gson.Gson;
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
 
 public class TodoItem implements Serializable {
-
-    private static final long NUMOFMININDAY = 1440;
-    private static final long NUMOFMININHOUR = 60;
 
     enum status {
         IN_PROGRESS,
